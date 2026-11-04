@@ -1,4 +1,4 @@
-// J.A.R.V.I.S. v1.0 - Claude-powered, voice-first
+// J.A.R.V.I.S. v1.0 - Gemini-powered, voice-first
 const $ = (id) => document.getElementById(id);
 const chatLog = $('chat-log'), userInput = $('user-input'), chatStatus = $('chat-status');
 const visualPreview = $('visual-preview'), lastAnalysis = $('last-analysis'), timeDisplay = $('time-display');
@@ -108,7 +108,7 @@ async function ask(text, img) {
   let out;
   try {
     out = img ? null : localTool(text);
-    if (!out && !cloud) out = 'My language core is offline, Sir. Add the ANTHROPIC_API_KEY in Netlify and redeploy to bring me fully online.';
+    if (!out && !cloud) out = 'My language core is offline, Sir. Add the GEMINI_API_KEY in Netlify and redeploy to bring me fully online.';
     if (!out) {
       const content = img ? [{ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: img } }, { type: 'text', text }] : text;
       const msgs = [...history.slice(-20), { role: 'user', content }];
@@ -227,7 +227,7 @@ window.addEventListener('load', async () => {
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
   if ('speechSynthesis' in window) speechSynthesis.getVoices();
   try { const r = await fetch(API); const d = await r.json(); cloud = !!d.configured; } catch (e) { cloud = false; }
-  $('core-val').textContent = cloud ? 'CLAUDE ONLINE' : 'OFFLINE MODE';
+  $('core-val').textContent = cloud ? 'GEMINI ONLINE' : 'OFFLINE MODE';
   $('core-val').className = 'value ' + (cloud ? 'green' : 'cyan');
   $('mem-val').textContent = history.length + ' ENTRIES';
   addMessage('Mainframe initialized.', 'system');
