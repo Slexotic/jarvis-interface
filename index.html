@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>J.A.R.V.I.S. | Mainframe</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
+
+  <header class="top-bar">
+    <div class="logo">
+      <span class="logo-mark">J</span>
+      <div class="logo-text">
+        <span class="title">J.A.R.V.I.S.</span>
+        <span class="subtitle">Just A Rather Very Intelligent System</span>
+      </div>
+    </div>
+    <div class="status-cluster">
+      <div class="status-item">
+        <span class="status-dot online"></span>
+        <span>MAINFRAME ONLINE</span>
+      </div>
+      <div class="status-item" id="time-display">--:--:--</div>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <!-- Left diagnostic panel -->
+    <aside class="panel left-panel">
+      <div class="panel-header">SYSTEM STATUS</div>
+      <div class="diag-grid">
+        <div class="diag-item">
+          <span class="label">CORE</span>
+          <span class="value green">NOMINAL</span>
+        </div>
+        <div class="diag-item">
+          <span class="label">MEMORY</span>
+          <span class="value green">STABLE</span>
+        </div>
+        <div class="diag-item">
+          <span class="label">VISION</span>
+          <span class="value cyan">READY</span>
+        </div>
+        <div class="diag-item">
+          <span class="label">VOICE</span>
+          <span class="value cyan">STANDBY</span>
+        </div>
+      </div>
+
+      <div class="panel-header" style="margin-top: 1.5rem;">QUICK ACTIONS</div>
+      <div class="action-buttons">
+        <button class="action-btn" onclick="jarvisCommand('status')">System Status</button>
+        <button class="action-btn" onclick="jarvisCommand('clear')">Clear Logs</button>
+        <button class="action-btn" onclick="document.getElementById('image-input').click()">Upload Visual</button>
+        <button class="action-btn" id="voice-btn" onclick="toggleVoice()">Voice Input</button>
+      </div>
+
+      <div class="panel-header" style="margin-top: 1.5rem;">NOTES</div>
+      <p class="note-text">
+        This is a self-contained starter.  
+        Connect a real LLM API in <code>script.js</code> for live intelligence.
+      </p>
+    </aside>
+
+    <!-- Center chat -->
+    <section class="chat-section">
+      <div class="chat-header">
+        <span>COMMAND INTERFACE</span>
+        <span class="chat-status" id="chat-status">AWAITING INPUT</span>
+      </div>
+      <div class="chat-log" id="chat-log">
+        <!-- Messages injected here -->
+      </div>
+      <div class="input-area">
+        <input type="file" id="image-input" accept="image/*" hidden />
+        <textarea id="user-input" placeholder="Address me, Sir..." rows="1"></textarea>
+        <button id="send-btn" onclick="sendMessage()">SEND</button>
+      </div>
+    </section>
+
+    <!-- Right panel -->
+    <aside class="panel right-panel">
+      <div class="panel-header">VISUAL FEED</div>
+      <div class="visual-preview" id="visual-preview">
+        <div class="placeholder">No visual input</div>
+      </div>
+      <div class="panel-header" style="margin-top: 1.5rem;">LAST ANALYSIS</div>
+      <div id="last-analysis" class="analysis-box">
+        Waiting for image or command...
+      </div>
+    </aside>
+  </main>
+
+  <footer class="bottom-bar">
+    <span>STARK INDUSTRIES • PROTOTYPE BUILD 0.1</span>
+    <span id="session-id">SESSION: LOCAL</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
