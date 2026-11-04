@@ -16,82 +16,24 @@
 <body>
   <div class='scanlines'></div>
   <div class='vignette'></div>
-
   <header class='top-bar'>
-    <div class='logo'>
-      <span class='logo-mark'>J</span>
-      <div class='logo-text'>
-        <span class='title'>J.A.R.V.I.S.</span>
-        <span class='subtitle'>Just A Rather Very Intelligent System</span>
-      </div>
-    </div>
-    <div class='status-cluster'>
-      <div class='status-item'>
-        <span class='status-dot online'></span>
-        <span>MAINFRAME ONLINE</span>
-      </div>
-      <div class='status-item' id='time-display'>--:--:--</div>
-    </div>
+    <div class='logo'><span class='logo-mark'>J</span><div class='logo-text'><span class='title'>J.A.R.V.I.S.</span><span class='subtitle'>Just A Rather Very Intelligent System</span></div></div>
+    <div class='status-cluster'><div class='status-item'><span class='status-dot online'></span><span>MAINFRAME ONLINE</span></div><div class='status-item' id='time-display'>--:--:--</div></div>
   </header>
-
   <main class='main-layout'>
     <aside class='panel left-panel'>
       <div class='panel-header'>SYSTEM STATUS</div>
-      <div class='diag-grid'>
-        <div class='diag-item'><span class='label'>CORE</span><span class='value cyan' id='core-val'>LINKING</span></div>
-        <div class='diag-item'><span class='label'>MEMORY</span><span class='value green' id='mem-val'>0 ENTRIES</span></div>
-        <div class='diag-item'><span class='label'>VISION</span><span class='value cyan' id='vision-val'>READY</span></div>
-        <div class='diag-item'><span class='label'>VOICE</span><span class='value cyan' id='voice-val'>STANDBY</span></div>
-      </div>
-
+      <div class='diag-grid'><div class='diag-item'><span class='label'>CORE</span><span class='value cyan' id='core-val'>LINKING</span></div><div class='diag-item'><span class='label'>MEMORY</span><span class='value green' id='mem-val'>0 ENTRIES</span></div><div class='diag-item'><span class='label'>VISION</span><span class='value cyan' id='vision-val'>READY</span></div><div class='diag-item'><span class='label'>VOICE</span><span class='value cyan' id='voice-val'>STANDBY</span></div></div>
       <div class='panel-header' style='margin-top: 1.5rem;'>QUICK ACTIONS</div>
-      <div class='action-buttons'>
-        <button class='action-btn' id='wake-btn' onclick='toggleWake()'>Wake Word: OFF</button>
-        <button class='action-btn' id='voice-btn' onclick='toggleVoice()'>Voice Input</button>
-        <button class='action-btn' id='mute-btn' onclick='toggleMute()'>Voice Reply: ON</button>
-        <button class='action-btn' onclick='document.getElementById(&quot;image-input&quot;).click()'>Upload Visual</button>
-        <button class='action-btn' onclick='jarvisCommand(&quot;status&quot;)'>System Status</button>
-        <button class='action-btn' onclick='jarvisCommand(&quot;clear&quot;)'>Clear Memory</button>
-      </div>
-
+      <div class='action-buttons'><button class='action-btn' id='wake-btn' onclick='toggleWake()'>Wake Word: OFF</button><button class='action-btn' id='voice-btn' onclick='toggleVoice()'>Voice Input</button><button class='action-btn' id='mute-btn' onclick='toggleMute()'>Voice Reply: ON</button><button class='action-btn' onclick='document.getElementById(&quot;image-input&quot;).click()'>Upload Visual</button><button class='action-btn' onclick='jarvisCommand(&quot;status&quot;)'>System Status</button><button class='action-btn' onclick='jarvisCommand(&quot;clear&quot;)'>Clear Memory</button></div>
       <div class='panel-header' style='margin-top: 1.5rem;'>TRY SAYING</div>
-      <p class='note-text'>
-        Jarvis, what time is it<br>
-        Jarvis, open YouTube<br>
-        Jarvis, set a timer for 5 minutes<br>
-        Or ask anything. Upload an image to have me describe it.
-      </p>
+      <p class='note-text'>Jarvis, what time is it<br>Jarvis, open YouTube<br>Jarvis, set a timer for 5 minutes<br>Or ask anything. Upload an image to have me describe it.</p>
     </aside>
-
-    <section class='chat-section'>
-      <div class='chat-header'>
-        <span>COMMAND INTERFACE</span>
-        <span class='chat-status' id='chat-status'>AWAITING INPUT</span>
-      </div>
-      <div class='orb' id='orb' data-state='idle'></div>
-      <div class='chat-log' id='chat-log'></div>
-      <div class='input-area'>
-        <input type='file' id='image-input' accept='image/*' hidden />
-        <textarea id='user-input' placeholder='Address me, Sir...' rows='1'></textarea>
-        <button id='send-btn' onclick='sendMessage()'>SEND</button>
-      </div>
-    </section>
-
-    <aside class='panel right-panel'>
-      <div class='panel-header'>VISUAL FEED</div>
-      <div class='visual-preview' id='visual-preview'>
-        <div class='placeholder'>No visual input</div>
-      </div>
-      <div class='panel-header' style='margin-top: 1.5rem;'>LAST ANALYSIS</div>
-      <div id='last-analysis' class='analysis-box'>Waiting for image or command...</div>
-    </aside>
+    <section class='chat-section'><div class='chat-header'><span>COMMAND INTERFACE</span><span class='chat-status' id='chat-status'>AWAITING INPUT</span></div><div class='orb' id='orb' data-state='idle'></div><div class='chat-log' id='chat-log'></div><div class='input-area'><input type='file' id='image-input' accept='image/*' hidden /><textarea id='user-input' placeholder='Address me, Sir...' rows='1'></textarea><button id='send-btn' onclick='sendMessage()'>SEND</button></div></section>
+    <aside class='panel right-panel'><div class='panel-header'>VISUAL FEED</div><div class='visual-preview' id='visual-preview'><div class='placeholder'>No visual input</div></div><div class='panel-header' style='margin-top: 1.5rem;'>LAST ANALYSIS</div><div id='last-analysis' class='analysis-box'>Waiting for image or command...</div></aside>
   </main>
-
-  <footer class='bottom-bar'>
-    <span>STARK INDUSTRIES &bull; BUILD 1.0</span>
-    <span id='session-id'>SESSION: SECURE</span>
-  </footer>
-
+  <footer class='bottom-bar'><span>STARK INDUSTRIES &bull; BUILD 1.0</span><span id='session-id'>SESSION: SECURE</span></footer>
   <script src='script.js'></script>
+  <script src='fish-voice.js'></script>
 </body>
 </html>
