@@ -1,12 +1,12 @@
 // J.A.R.V.I.S. language core proxy (Netlify Function)
-// Keeps your Anthropic API key on the server so it never reaches the browser.
+// Keeps the Gemini API key on the server so it never reaches the browser.
 //
-// Environment variables (Netlify > Project configuration > Environment variables):
-//   ANTHROPIC_API_KEY  (required)  your Anthropic API key
-//   JARVIS_PASSCODE    (optional)  if set, the browser must send this passcode
-//   JARVIS_MODEL       (optional)  defaults to claude-sonnet-5-5
+// Environment variables:
+//   GEMINI_API_KEY  (required)  Gemini API key stored in Netlify
+//   JARVIS_PASSCODE (optional)  if set, the browser must send this passcode
+//   JARVIS_MODEL    (optional)  defaults to gemini-3.8-flash
 
-const DEFAULT_MODEL = process.env.JARVIS_MODEL || 'claude-sonnet-5-5';
+const DEFAULT_MODEL = process.env.JARVIS_MODEL || 'gemini-3.8-flash';
 
 const json = (statusCode, obj) => ({
   statusCode,
@@ -14,13 +14,36 @@ const json = (statusCode, obj) => ({
   body: JSON.stringify(obj),
 });
 
+function toGeminiContents(messages) {
+  return messages.map((message) => {
+    const parts = Array.isArray(message.content)
+      ? message.content.map((part) => {
+          if (part.type === 'image' && part.source && part.source.type === 'base64') {
+            return {
+              inlineData: {
+                mimeType: part.source.media_type || 'image/jpeg',
+                data: part.source.data,
+              },
+            };
+          }
+          if (part.type === 'text') return { text: String(part.text || '') };
+          return null;
+        }).filter(Boolean)
+      : [{ text: String(message.content || '') }];
+
+    return {
+      role: message.role === 'assistant' ? 'model' : 'user',
+      parts: parts.length ? parts : [{ text: ' ' }],
+    };
+  });
+}
+
 exports.handler = async (event) => {
-  const key = process.env.ANTHROPIC_API_KEY;
+  const key = process.env.GEMINI_API_KEY;
   const passcode = process.env.JARVIS_PASSCODE;
 
-  // Health check used by the interface to decide between cloud and local mode
   if (event.httpMethod === 'GET') {
-    return json(200, { ok: true, configured: !!key, passcodeRequired: !!passcode });
+    return json(200, { ok: true, configured: !!key, provider: 'gemini', passcodeRequired: !!passcode });
   }
   if (event.httpMethod !== 'POST') return json(405, { error: 'METHOD_NOT_ALLOWED' });
   if (!key) return json(503, { error: 'NO_KEY' });
@@ -44,28 +67,31 @@ exports.handler = async (event) => {
     return json(400, { error: 'BAD_ROLE' });
   }
 
-  const useModel = typeof model === 'string' && /^claude-[a-z0-9.-]+$/.test(model) ? model : DEFAULT_MODEL;
+  const useModel = typeof model === 'string' && /^gemini-[a-z0-9.-]+$/.test(model) ? model : DEFAULT_MODEL;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${useModel}:generateContent`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
+        'x-goog-api-key': key,
       },
       body: JSON.stringify({
-        model: useModel,
-        max_tokens: 700,
-        system: String(system || '').slice(0, 8000),
-        messages,
+        systemInstruction: { parts: [{ text: String(system || '').slice(0, 8000) }] },
+        contents: toGeminiContents(messages),
+        generationConfig: { maxOutputTokens: 700 },
       }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      return json(502, { error: 'UPSTREAM', status: res.status, detail: data && data.error && data.error.message });
+      const detail = data && data.error && data.error.message;
+      return json(502, { error: 'UPSTREAM', status: res.status, detail });
     }
-    const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n');
+    const text = (data.candidates?.[0]?.content?.parts || [])
+      .filter((part) => typeof part.text === 'string')
+      .map((part) => part.text)
+      .join('\n');
+    if (!text) return json(502, { error: 'EMPTY_RESPONSE', detail: 'Gemini returned no text.' });
     return json(200, { text });
   } catch (err) {
     return json(502, { error: 'NETWORK', detail: String(err && err.message) });
